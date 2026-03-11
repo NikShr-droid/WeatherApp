@@ -1,12 +1,14 @@
+import { API_KEY } from './config.js';
 const container = document.querySelector('.container');
 const search = document.querySelector('.search-box button');
+const input = document.querySelector('.search-box input');
 const weatherBox = document.querySelector('.weather-box');
 const weatherDetails = document.querySelector('.weather-details');
 const error404 = document.querySelector('.not-found');
 
-search.addEventListener('click', () => {
+function fetchWeather() {
     const APIKey = API_KEY;
-    const city = document.querySelector('.search-box input').value;
+    const city = input.value.trim();
 
     if (city === '')
         return;
@@ -15,7 +17,7 @@ search.addEventListener('click', () => {
         .then(response => response.json())
         .then(json => {
 
-            if (json.cod === '404') {
+            if (json.cod === '404' || json.cod === 404) {
                 container.style.height = '400px';
                 weatherBox.style.display = 'none';
                 weatherDetails.style.display = 'none';
@@ -68,9 +70,10 @@ search.addEventListener('click', () => {
             weatherBox.classList.add('fadeIn');
             weatherDetails.classList.add('fadeIn');
             container.style.height = '590px';
-
-
         });
+}
 
-
+search.addEventListener('click', fetchWeather);
+input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') fetchWeather();
 });
